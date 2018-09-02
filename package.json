@@ -13,7 +13,8 @@
     "dev": "webpack-dev-server --mode development --hot",
     "build": "webpack --mode production",
     "lint": "eslint .",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "release": "standard-version"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -37,7 +38,8 @@
     "webpack-dev-server": "^3.1.7"
   },
   "dependencies": {
-    "p5": "^0.7.1"
+    "p5": "^0.7.1",
+    "standard-version": "^4.4.0"
   },
   "config": {
     "commitizen": {
