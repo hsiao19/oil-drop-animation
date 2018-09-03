@@ -1,9 +1,11 @@
 import P5 from 'p5';
 
+import './global.css';
+
 const sketchGenerator = s => {
 	const sketch = s;
 	sketch.setup = () => {
-		sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
+		sketch.createCanvas(100, 100);
 		sketch.background(120);
 	};
 

@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const atImport = require('postcss-import');
+const cssnext = require('postcss-preset-env');
 
 module.exports = {
 	module: {
@@ -8,6 +10,21 @@ module.exports = {
 				test: /\.js$/,
 				exclude: /node_modules/,
 				use: ['babel-loader'],
+			},
+			{
+				test: /\.(css|sass|scss)$/,
+				use: [
+					'style-loader',
+					'css-loader',
+					'sass-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							sourceMap: 'inline',
+							plugins: () => [atImport(), cssnext({})],
+						},
+					},
+				],
 			},
 		],
 	},
