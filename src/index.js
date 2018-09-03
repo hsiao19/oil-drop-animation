@@ -6,7 +6,7 @@ import 'global.css';
 const sketchGenerator = s => {
 	const sketch = s;
 	sketch.setup = () => {
-		sketch.createCanvas(100, 100);
+		sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
 		sketch.background(120);
 	};
 
