@@ -1,6 +1,6 @@
 import P5 from 'p5';
 
-import './global.css';
+import 'global.css';
 
 const sketchGenerator = s => {
 	const sketch = s;
