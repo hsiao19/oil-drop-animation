@@ -3,18 +3,18 @@ import P5 from 'p5/lib/p5.min';
 import 'normalize.css';
 import 'global.css';
 
-const sketchGenerator = s => {
-	const sketch = s;
-	sketch.setup = () => {
-		sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
-		sketch.background(120);
+const sketchGenerator = p5Sketch => {
+	const p5 = p5Sketch;
+	p5.setup = () => {
+		p5.createCanvas(p5.windowWidth, p5.windowHeight);
+		p5.background(120);
 	};
 
-	sketch.draw = () => {};
+	p5.draw = () => {};
 
-	sketch.windowResized = () => {
-		sketch.resizeCanvas(sketch.windowWidth, sketch.windowHeight);
-		sketch.background(120);
+	p5.windowResized = () => {
+		p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+		p5.background(120);
 	};
 };
 
