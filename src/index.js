@@ -14,7 +14,7 @@ const sketchGenerator = p5Sketch => {
 
 	p5.setup = () => {
 		p5.createCanvas(p5.windowWidth, p5.windowHeight);
-		p5.background(120);
+		p5.background(200);
 		droplet.generate();
 	};
 

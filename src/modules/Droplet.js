@@ -10,15 +10,15 @@ export default class Droplet extends SketchComponent {
 
 	attributes = {
 		// power of droplet get together
-		cohesive: 10,
+		cohesive: 100,
 
 		// power of droplet stick on the wall
-		adhesion: 10,
+		adhesion: 100,
 		colorMap: [],
 	};
 
 	states = {
-		volume: 1000,
+		volume: 1000000,
 		shapeList: [],
 	};
 
@@ -27,8 +27,6 @@ export default class Droplet extends SketchComponent {
 		this.attributes.colorMap = [
 			// lowest
 			{ position: 0, color: p5.color(255, 150, 0) },
-
-			{ position: 0.5, color: p5.color(255, 204, 0) },
 
 			// highest
 			{ position: 1, color: p5.color(255, 204, 0) },
@@ -64,7 +62,7 @@ export default class Droplet extends SketchComponent {
 
 			const height = p5.floor(radius);
 
-			Array.from({ length: height }, (x, i) => i + 1).forEach(surfaceHeight => {
+			Array.from({ length: height }, (x, i) => i).forEach(surfaceHeight => {
 				const position = p5.norm(surfaceHeight, 0, height);
 
 				let color = null;
@@ -96,7 +94,8 @@ export default class Droplet extends SketchComponent {
 				shape.push({
 					position,
 					surfaceHeight,
-					radius: radius - surfaceHeight,
+					radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
+					// radius: radius - surfaceHeight,
 					color,
 				});
 			});
