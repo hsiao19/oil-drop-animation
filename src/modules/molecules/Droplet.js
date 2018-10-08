@@ -14,12 +14,13 @@ export default class Droplet extends P5Component {
 		cohesive: 100,
 
 		// power of droplet stick on the wall
-		adhesion: 100,
+		adhesion: 1,
 		colorMap: [],
 	};
 
 	states = {
-		volume: 50000,
+		volume: 500000,
+		speed: 2,
 		shapeList: [],
 	};
 
@@ -34,55 +35,73 @@ export default class Droplet extends P5Component {
 
 		this.props.startX = startX;
 		this.props.startY = startY;
+
+		const {
+			states: { volume, shapeList },
+		} = this;
+
+		shapeList.push(this._setShape({ x: startX, y: startY, volume }));
 	}
 
 	addVolume(volume) {
 		this.states.volume += volume;
 	}
 
-	_setShape() {
+	_setShape({ x, y, volume, flat, radius }) {
 		const {
 			p5,
 			attributes: { cohesive },
-			states: { volume },
 		} = this;
 
 		const shapeMaxVolume = ((3 / 4) * p5.PI * cohesive ** 3) / 2;
 		const maxHeight = cohesive;
 
 		const shape = [];
+		let maxRadius = 0;
+		let height = maxHeight;
+
+		if (flat) {
+			shape.push({
+				position: 0,
+				surfaceHeight: 1,
+				radius,
+			});
+
+			return { x, y, volume, maxRadius: radius, height: 1, shape };
+		}
 
 		if (volume > shapeMaxVolume) {
 			const overflowVolume = volume - shapeMaxVolume;
 			const overflowRadius = Math.cbrt((overflowVolume * 8) / 3 / p5.PI);
+			maxRadius = maxHeight + overflowRadius;
 
-			Array.from({ length: maxHeight }, (x, i) => i).forEach(surfaceHeight => {
+			Array.from({ length: maxHeight }, (_, i) => i).forEach(surfaceHeight => {
 				const position = p5.norm(surfaceHeight, 0, maxHeight);
 
 				shape.push({
 					position,
 					surfaceHeight,
-					radius: maxHeight + overflowRadius - surfaceHeight,
+					radius: maxRadius - surfaceHeight,
 				});
 			});
 		} else {
-			const radius = Math.cbrt((volume * 8) / 3 / p5.PI);
+			maxRadius = Math.cbrt((volume * 8) / 3 / p5.PI);
 
-			const height = p5.floor(radius);
+			height = p5.floor(maxRadius);
 
-			Array.from({ length: height }, (x, i) => i).forEach(surfaceHeight => {
+			Array.from({ length: height }, (_, i) => i).forEach(surfaceHeight => {
 				const position = p5.norm(surfaceHeight, 0, maxHeight);
 
 				shape.push({
 					position,
 					surfaceHeight,
 					// radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
-					radius: radius - surfaceHeight,
+					radius: maxRadius - surfaceHeight,
 				});
 			});
 		}
 
-		this.states.shapeList.push(shape);
+		return { x, y, volume, maxRadius, height, shape };
 	}
 
 	_getColor(position) {
@@ -122,16 +141,42 @@ export default class Droplet extends P5Component {
 	}
 
 	_drawShape(shape) {
-		const {
-			p5,
-			props: { startX, startY },
-		} = this;
+		const { p5 } = this;
 
 		p5.ellipseMode(p5.CENTER);
-		shape.forEach(surface => {
+		shape.shape.forEach(surface => {
 			p5.fill(this._getColor(surface.position));
-			p5.ellipse(startX, startY, surface.radius, surface.radius);
+			p5.ellipse(shape.x, shape.y, surface.radius, surface.radius);
 		});
+	}
+
+	drop() {
+		const {
+			p5,
+			attributes: { adhesion },
+			states: { speed, shapeList },
+		} = this;
+
+		const lastShape = shapeList[shapeList.length - 1];
+
+		if (lastShape.height > adhesion) {
+			shapeList.splice(
+				shapeList.length - 1,
+				1,
+				this._setShape({
+					x: lastShape.x,
+					y: lastShape.y,
+					volume: adhesion * lastShape.maxRadius * lastShape.maxRadius * p5.PI,
+					flat: true,
+					radius: lastShape.maxRadius,
+				}),
+				this._setShape({
+					x: lastShape.x,
+					y: lastShape.y + speed,
+					volume: lastShape.volume - adhesion * lastShape.maxRadius * lastShape.maxRadius * p5.PI,
+				}),
+			);
+		}
 	}
 
 	generate() {
@@ -142,7 +187,8 @@ export default class Droplet extends P5Component {
 
 		p5.noStroke();
 
-		this._setShape();
+		this.drop();
+
 		shapeList.forEach(shape => {
 			this._drawShape(shape);
 		});
