@@ -1,4 +1,4 @@
-export default class p5Component {
+export default class P5Component {
 	p5;
 
 	constructor(p5) {

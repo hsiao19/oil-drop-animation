@@ -1,6 +1,7 @@
-import p5Component from 'util/p5Component';
+import P5Component from 'util/P5Component';
+import ColorPointer from 'modules/atoms/ColorPointer';
 
-export default class Droplet extends p5Component {
+export default class Droplet extends P5Component {
 	p5;
 
 	props = {
@@ -26,10 +27,9 @@ export default class Droplet extends p5Component {
 		super(p5);
 		this.attributes.colorMap = [
 			// lowest
-			{ position: 0, color: p5.color(255, 150, 0) },
-
+			new ColorPointer({ position: 0, color: p5.color(255, 150, 0) }),
 			// highest
-			{ position: 1, color: p5.color(255, 204, 0) },
+			new ColorPointer({ position: 1, color: p5.color(255, 204, 0) }),
 		];
 
 		this.props.startX = startX;
