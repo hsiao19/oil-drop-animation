@@ -65,26 +65,26 @@ export default class Droplet extends P5Component {
 			Array.from({ length: height }, (x, i) => i).forEach(surfaceHeight => {
 				const position = p5.norm(surfaceHeight, 0, height);
 
-				let color = null;
+				let displayColor = null;
 				let lerpFrom = colorMap[0];
 				let lerpTo = colorMap[colorMap.length - 1];
-				colorMap.sort((a, b) => a.position - b.position).forEach(colorPointer => {
-					if (position === colorPointer.position) {
+				colorMap.sort((a, b) => a.position - b.position).forEach(color => {
+					if (position === color.position) {
 						// eslint-disable-next-line prefer-destructuring
-						color = colorPointer.color;
+						displayColor = color.color;
 					}
 
-					if (position > colorPointer.position && colorPointer.position > lerpFrom.position) {
-						lerpFrom = colorPointer;
+					if (position > color.position && color.position > lerpFrom.position) {
+						lerpFrom = color;
 					}
 
-					if (position < colorPointer.position && colorPointer.position < lerpTo.position) {
-						lerpTo = colorPointer;
+					if (position < color.position && color.position < lerpTo.position) {
+						lerpTo = color;
 					}
 				});
 
-				if (!color) {
-					color = p5.lerpColor(
+				if (!displayColor) {
+					displayColor = p5.lerpColor(
 						lerpFrom.color,
 						lerpTo.color,
 						p5.norm(position, lerpFrom.position, lerpTo.position),
@@ -96,7 +96,7 @@ export default class Droplet extends P5Component {
 					surfaceHeight,
 					radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
 					// radius: radius - surfaceHeight,
-					color,
+					color: displayColor,
 				});
 			});
 		}
