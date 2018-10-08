@@ -53,12 +53,18 @@ export default class Droplet extends P5Component {
 		const shape = [];
 
 		if (volume > shapeMaxVolume) {
-			// x ** 2 * p5.PI + x - 2 *
-			// const maxHeight = cohesive;
-			// const centerRadius = x;
-			// const outerRadius = centerRadius + cohesive;
-			// 中間體積 = centerRadius * centerRadius * PI * maxHeight;
-			// 周圍體積 = (maxHeight * maxHeight * PI / 4) *
+			const overflowVolume = volume - shapeMaxVolume;
+			const overflowRadius = Math.cbrt((overflowVolume * 8) / 3 / p5.PI);
+
+			Array.from({ length: maxHeight }, (x, i) => i).forEach(surfaceHeight => {
+				const position = p5.norm(surfaceHeight, 0, maxHeight);
+
+				shape.push({
+					position,
+					surfaceHeight,
+					radius: maxHeight + overflowRadius - surfaceHeight,
+				});
+			});
 		} else {
 			const radius = Math.cbrt((volume * 8) / 3 / p5.PI);
 
@@ -70,8 +76,8 @@ export default class Droplet extends P5Component {
 				shape.push({
 					position,
 					surfaceHeight,
-					radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
-					// radius: radius - surfaceHeight,
+					// radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
+					radius: radius - surfaceHeight,
 				});
 			});
 		}
