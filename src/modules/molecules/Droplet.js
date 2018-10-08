@@ -19,7 +19,7 @@ export default class Droplet extends P5Component {
 	};
 
 	states = {
-		volume: 1000000,
+		volume: 50000,
 		shapeList: [],
 	};
 
@@ -43,15 +43,17 @@ export default class Droplet extends P5Component {
 	_setShape() {
 		const {
 			p5,
-			attributes: { cohesive, colorMap },
+			attributes: { cohesive },
 			states: { volume },
 		} = this;
 
 		const shapeMaxVolume = ((3 / 4) * p5.PI * cohesive ** 3) / 2;
+		const maxHeight = cohesive;
 
 		const shape = [];
 
 		if (volume > shapeMaxVolume) {
+			// x ** 2 * p5.PI + x - 2 *
 			// const maxHeight = cohesive;
 			// const centerRadius = x;
 			// const outerRadius = centerRadius + cohesive;
@@ -63,45 +65,54 @@ export default class Droplet extends P5Component {
 			const height = p5.floor(radius);
 
 			Array.from({ length: height }, (x, i) => i).forEach(surfaceHeight => {
-				const position = p5.norm(surfaceHeight, 0, height);
-
-				let displayColor = null;
-				let lerpFrom = colorMap[0];
-				let lerpTo = colorMap[colorMap.length - 1];
-				colorMap.sort((a, b) => a.position - b.position).forEach(color => {
-					if (position === color.position) {
-						// eslint-disable-next-line prefer-destructuring
-						displayColor = color.color;
-					}
-
-					if (position > color.position && color.position > lerpFrom.position) {
-						lerpFrom = color;
-					}
-
-					if (position < color.position && color.position < lerpTo.position) {
-						lerpTo = color;
-					}
-				});
-
-				if (!displayColor) {
-					displayColor = p5.lerpColor(
-						lerpFrom.color,
-						lerpTo.color,
-						p5.norm(position, lerpFrom.position, lerpTo.position),
-					);
-				}
+				const position = p5.norm(surfaceHeight, 0, maxHeight);
 
 				shape.push({
 					position,
 					surfaceHeight,
 					radius: Math.sqrt(radius ** 2 - surfaceHeight ** 2),
 					// radius: radius - surfaceHeight,
-					color: displayColor,
 				});
 			});
 		}
 
 		this.states.shapeList.push(shape);
+	}
+
+	_getColor(position) {
+		const {
+			p5,
+			attributes: { colorMap },
+		} = this;
+
+		let displayColor = null;
+		let lerpFrom = colorMap[0];
+		let lerpTo = colorMap[colorMap.length - 1];
+
+		colorMap.sort((a, b) => a.position - b.position).forEach(color => {
+			if (position === color.position) {
+				// eslint-disable-next-line prefer-destructuring
+				displayColor = color.color;
+			}
+
+			if (position > color.position && color.position > lerpFrom.position) {
+				lerpFrom = color;
+			}
+
+			if (position < color.position && color.position < lerpTo.position) {
+				lerpTo = color;
+			}
+		});
+
+		if (!displayColor) {
+			displayColor = p5.lerpColor(
+				lerpFrom.color,
+				lerpTo.color,
+				p5.norm(position, lerpFrom.position, lerpTo.position),
+			);
+		}
+
+		return displayColor;
 	}
 
 	_drawShape(shape) {
@@ -112,7 +123,7 @@ export default class Droplet extends P5Component {
 
 		p5.ellipseMode(p5.CENTER);
 		shape.forEach(surface => {
-			p5.fill(surface.color);
+			p5.fill(this._getColor(surface.position));
 			p5.ellipse(startX, startY, surface.radius, surface.radius);
 		});
 	}
