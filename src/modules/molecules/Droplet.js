@@ -1,6 +1,6 @@
-import { SketchComponent } from 'util/sketch';
+import p5Component from 'util/p5Component';
 
-export default class Droplet extends SketchComponent {
+export default class Droplet extends p5Component {
 	p5;
 
 	props = {
