@@ -8,9 +8,10 @@ import Droplet from 'modules/molecules/Droplet';
 /* eslint-disable no-new */
 
 const sketchGenerator = p5Sketch => {
+	window.p5 = p5Sketch;
 	const p5 = p5Sketch;
 
-	const droplet = new Droplet(p5, 100, 100);
+	const droplet = new Droplet(100, 100);
 
 	p5.setup = () => {
 		p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -27,4 +28,4 @@ const sketchGenerator = p5Sketch => {
 	};
 };
 
-new P5(sketchGenerator, window.document.getElementById('sketch'));
+new P5(sketchGenerator, 'sketch');

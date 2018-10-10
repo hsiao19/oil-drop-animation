@@ -14,7 +14,7 @@ export default class Droplet extends P5Component {
 		cohesive: 100,
 
 		// power of droplet stick on the wall
-		adhesion: 1,
+		adhesion: 2,
 		colorMap: [],
 	};
 
@@ -24,8 +24,13 @@ export default class Droplet extends P5Component {
 		shapeList: [],
 	};
 
-	constructor(p5, startX, startY) {
-		super(p5);
+	constructor(startX, startY) {
+		super();
+		const {
+			p5,
+			states: { volume, shapeList },
+		} = this;
+
 		this.attributes.colorMap = [
 			// lowest
 			new ColorPointer({ position: 0, color: p5.color(255, 150, 0) }),
@@ -35,10 +40,6 @@ export default class Droplet extends P5Component {
 
 		this.props.startX = startX;
 		this.props.startY = startY;
-
-		const {
-			states: { volume, shapeList },
-		} = this;
 
 		shapeList.push(this._setShape({ x: startX, y: startY, volume }));
 	}
