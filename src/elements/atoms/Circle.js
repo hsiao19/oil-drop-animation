@@ -1,4 +1,4 @@
-import Shape from 'modules/abstract/Shape';
+import Shape from 'elements/abstract/Shape';
 
 export default class Circle extends Shape {
 	mode = 'CENTER';

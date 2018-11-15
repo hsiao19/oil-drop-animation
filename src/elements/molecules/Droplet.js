@@ -1,5 +1,5 @@
 import P5Component from 'util/P5Component';
-import ColorPointer from 'modules/atoms/ColorPointer';
+import ColorPointer from 'elements/atoms/ColorPointer';
 
 export default class Droplet extends P5Component {
 	p5;

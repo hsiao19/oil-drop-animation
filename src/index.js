@@ -3,7 +3,7 @@ import P5 from 'p5/lib/p5.min';
 import 'normalize.css';
 import 'global.css';
 
-import Droplet from 'modules/molecules/Droplet';
+import Droplet from 'elements/molecules/Droplet';
 
 /* eslint-disable no-new */
 
